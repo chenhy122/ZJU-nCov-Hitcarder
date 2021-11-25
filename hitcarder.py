@@ -231,10 +231,16 @@ if __name__ == "__main__":
 
     ret, msg, cont = main(username, password)
     print(ret, msg, cont)
-    if ret == 1:
+    count = 0
+    while (ret == 1 and count < 10):
         time.sleep(5)
         ret, msg, cont = main(username, password)
+        count ++
         print(ret, msg, cont)
+#     if ret == 1:
+#         time.sleep(5)
+#         ret, msg, cont = main(username, password)
+#         print(ret, msg, cont)
 
     pushplus_token = os.environ.get('PUSHPLUS_TOKEN')
     if pushplus_token:
