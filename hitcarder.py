@@ -235,7 +235,7 @@ if __name__ == "__main__":
     while (ret == 1 and count < 10):
         time.sleep(5)
         ret, msg, cont = main(username, password)
-        count ++
+        count +=1
         print(ret, msg, cont)
 #     if ret == 1:
 #         time.sleep(5)
