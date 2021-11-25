@@ -25,6 +25,10 @@ inputs:
     description: pushplus_token.
     required: false
     default: ''
+  pushplus2_token:
+    description: pushplus2_token.
+    required: false
+    default: ''
 
 runs:
   using: "composite"
@@ -36,6 +40,7 @@ runs:
         DINGTALK_TOKEN: ${{ inputs.dingtalk_token }}
         SERVERCHAN_KEY: ${{ inputs.serverchan_key }}
         PUSHPLUS_TOKEN: ${{ inputs.pushplus_token }}
+        PUSHPLUS2_TOKEN: ${{ inputs.pushplus2_token }}
       run: |
         cd ${{ github.action_path }}
         pip install -r ./requirements.txt
