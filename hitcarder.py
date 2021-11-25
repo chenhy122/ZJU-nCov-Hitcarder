@@ -215,13 +215,13 @@ def main(username, password):
         res = hit_carder.post()
         print(res)
         if str(res['e']) == '0':
-            return 0, f'{dk.info['name']} 打卡成功', datetime.date.today()+1
+            return 0, f'{hit_carder.info['name']} 打卡成功', datetime.date.today()+1
         elif str(res['m']) == '今天已经填报了':
-            return 0, f'{dk.info['name']} 今天已经打卡', str(res['m'])
+            return 0, f'{hit_carder.info['name']} 今天已经打卡', str(res['m'])
         else:
-            return 1, f'{dk.info['name']} 打卡失败', '数据提交失败'
+            return 1, f'{hit_carder.info['name']} 打卡失败', '数据提交失败'
     except:
-        return 1, f'{dk.info['name']} 打卡数据提交失败', '数据提交失败'
+        return 1, f'{hit_carder.info['name']} 打卡数据提交失败', '数据提交失败'
 
 
     
