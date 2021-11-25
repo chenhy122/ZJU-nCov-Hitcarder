@@ -111,13 +111,16 @@ class HitCarder(object):
             name = re.findall(r'realname: "([^\"]+)",', html)[0]
             number = re.findall(r"number: '([^\']+)',", html)[0]
 
-            magic_code = re.findall(
-                r'"([0-9a-z]{32})": "([0-9]{10})","([0-9a-z]{32})":"([0-9a-z]{32})"', html)[0]
-            magic_code_group = {
-                magic_code[0]: magic_code[1],
-                magic_code[2]: magic_code[3]
-            }
-
+#             magic_code = re.findall(
+#                 r'"([0-9a-z]{32})": "([0-9]{10})","([0-9a-z]{32})":"([0-9a-z]{32})"', html)[0]
+#             magic_code_group = {
+#                 magic_code[0]: magic_code[1],
+#                 magic_code[2]: magic_code[3]
+#             }
+            encrypt_message = re.findall(r'"([a-f0-9]{32})": *"([^\"]+)",', html)
+            if len(encrypt_message) != 2:
+                raise RegexMatchError("No mysterious key is found.")
+                
         except IndexError as err:
             raise RegexMatchError(
                 'Relative info not found in html with regex: ' + str(err))
@@ -131,8 +134,8 @@ class HitCarder(object):
         new_info["date"] = self.get_date()
         new_info["created"] = round(time.time())
         # form change
-        new_info['jrdqjcqk'] = ""
-        new_info['jrdqtlqk'] = []
+        new_info['jrdqjcqk[]'] = 0
+        new_info['jrdqtlqk[]'] = 0
         new_info['sfsqhzjkk'] = 1
         new_info['sqhzjkkys'] = 1
         new_info['sfqrxxss'] = 1
@@ -140,9 +143,13 @@ class HitCarder(object):
         new_info['zgfx14rfhsj'] = ""
         new_info['gwszdd'] = ""
         new_info['jcqzrq'] = ""
-        new_info['ismoved'] = 0
-        new_info.update(magic_code_group)
-
+        new_info['gtjzzfjsj'] = ""
+        new_info['szsqsfybl'] = 0
+        new_info['sfygtjzzfj'] = 0
+#         new_info['ismoved'] = 0
+#         new_info.update(magic_code_group)
+        for k, v in encrypt_message:
+            new_info[k] = v
         self.info = new_info
         # print(json.dumps(self.info))
         return new_info
@@ -190,33 +197,34 @@ def main(username, password):
         hit_carder.login()
         print('已登录到浙大统一身份认证平台')
     except Exception as err:
-        return 1, '打卡登录失败：' + str(err)
+        return 1, f'{hit_carder.username} 打卡登录失败：{err}'
 
     try:
         ret = hit_carder.check_form()
         if not ret:
-            return 2, '打卡信息已改变，请手动打卡'
+            return 2, f'{hit_carder.username} 打卡信息已改变，请手动打卡'
     except Exception as err:
-        return 1, '获取信息失败，请手动打卡: ' + str(err)
+        return 1, f'{hit_carder.username} 获取信息失败，请手动打卡: {err}'
 
     try:
         hit_carder.get_info()
     except Exception as err:
-        return 1, '获取信息失败，请手动打卡: ' + str(err)
+        return 1, f'{hit_carder.username} 获取信息失败，请手动打卡: {err}'
 
     try:
         res = hit_carder.post()
         print(res)
         if str(res['e']) == '0':
-            return 0, '打卡成功'
+            return 0, f'{dk.info['name']} 打卡成功'
         elif str(res['m']) == '今天已经填报了':
-            return 0, '今天已经打卡'
+            return 0, f'{dk.info['name']} 今天已经打卡'
         else:
-            return 1, '打卡失败'
+            return 1, f'{dk.info['name']} 打卡失败'
     except:
-        return 1, '打卡数据提交失败'
+        return 1, f'{dk.info['name']} 打卡数据提交失败'
 
 
+    
 if __name__ == "__main__":
     username = os.environ['USERNAME']
     password = os.environ['PASSWORD']
@@ -228,17 +236,12 @@ if __name__ == "__main__":
         ret, msg = main(username, password)
         print(ret, msg)
 
-    dingtalk_token = os.environ.get('DINGTALK_TOKEN')
-    if dingtalk_token:
-        ret = message.dingtalk(msg, dingtalk_token)
-        print('send_dingtalk_message', ret)
-
-    serverchan_key = os.environ.get('SERVERCHAN_KEY')
-    if serverchan_key:
-        ret = message.serverchan(msg, '', serverchan_key)
-        print('send_serverChan_message', ret)
-
     pushplus_token = os.environ.get('PUSHPLUS_TOKEN')
     if pushplus_token:
         ret = message.pushplus(msg, '', pushplus_token)
         print('send_pushplus_message', ret)
+    
+    pushplus2_token = os.environ.get('PUSHPLUS2_TOKEN')
+    if pushplus2_token:
+        ret = message.pushplus2(msg, '', pushplus2_token)
+        print('send_pushplus2_message', ret)
