@@ -197,31 +197,31 @@ def main(username, password):
         hit_carder.login()
         print('已登录到浙大统一身份认证平台')
     except Exception as err:
-        return 1, f'{hit_carder.username} 打卡登录失败', str(err)
+        return 1, '%s 打卡登录失败' %(hit_carder.username), str(err)
 
     try:
         ret = hit_carder.check_form()
         if not ret:
-            return 2, f'{hit_carder.username} 打卡信息已改变，请手动打卡', '打卡信息已改变'
+            return 2, '%s 打卡信息已改变，请手动打卡' %(hit_carder.username), '打卡信息已改变'
     except Exception as err:
-        return 1, f'{hit_carder.username} 获取信息失败，请手动打卡', str(err)
+        return 1, '%s 获取信息失败，请手动打卡' %(hit_carder.username), str(err)
 
     try:
         hit_carder.get_info()
     except Exception as err:
-        return 1, f'{hit_carder.username} 获取信息失败，请手动打卡', str(err)
+        return 1, '%s 获取信息失败，请手动打卡' %(hit_carder.username), str(err)
 
     try:
         res = hit_carder.post()
         print(res)
         if str(res['e']) == '0':
-            return 0, f'{hit_carder.info['name']} 打卡成功', datetime.date.today()+1
+            return 0, '%s 打卡成功' %(hit_carder.info['name']), datetime.date.today()+1
         elif str(res['m']) == '今天已经填报了':
-            return 0, f'{hit_carder.info['name']} 今天已经打卡', str(res['m'])
+            return 0, '%s 今天已经打卡' %(hit_carder.info['name']), str(res['m'])
         else:
-            return 1, f'{hit_carder.info['name']} 打卡失败', '数据提交失败'
+            return 1, '%s 打卡失败' %(hit_carder.info['name']), '数据提交失败'
     except:
-        return 1, f'{hit_carder.info['name']} 打卡数据提交失败', '数据提交失败'
+        return 1, '%s 打卡数据提交失败' %(hit_carder.info['name']), '数据提交失败'
 
 
     
