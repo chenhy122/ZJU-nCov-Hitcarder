@@ -151,7 +151,7 @@ class HitCarder(object):
         for k, v in encrypt_message:
             new_info[k] = v
         self.info = new_info
-        print(json.dumps(self.info))
+#         print(json.dumps(self.info))
         return new_info
 
     def _rsa_encrypt(self, password_str, e_str, M_str):
