@@ -197,31 +197,31 @@ def main(username, password):
         hit_carder.login()
         print('已登录到浙大统一身份认证平台')
     except Exception as err:
-        return 1, f'{hit_carder.username} 打卡登录失败：{err}'
+        return 1, f'{hit_carder.username} 打卡登录失败', str(err)
 
     try:
         ret = hit_carder.check_form()
         if not ret:
-            return 2, f'{hit_carder.username} 打卡信息已改变，请手动打卡'
+            return 2, f'{hit_carder.username} 打卡信息已改变，请手动打卡', '打卡信息已改变'
     except Exception as err:
-        return 1, f'{hit_carder.username} 获取信息失败，请手动打卡: {err}'
+        return 1, f'{hit_carder.username} 获取信息失败，请手动打卡', str(err)
 
     try:
         hit_carder.get_info()
     except Exception as err:
-        return 1, f'{hit_carder.username} 获取信息失败，请手动打卡: {err}'
+        return 1, f'{hit_carder.username} 获取信息失败，请手动打卡', str(err)
 
     try:
         res = hit_carder.post()
         print(res)
         if str(res['e']) == '0':
-            return 0, f'{dk.info['name']} 打卡成功'
+            return 0, f'{dk.info['name']} 打卡成功', datetime.date.today()+1
         elif str(res['m']) == '今天已经填报了':
-            return 0, f'{dk.info['name']} 今天已经打卡'
+            return 0, f'{dk.info['name']} 今天已经打卡', str(res['m'])
         else:
-            return 1, f'{dk.info['name']} 打卡失败'
+            return 1, f'{dk.info['name']} 打卡失败', '数据提交失败'
     except:
-        return 1, f'{dk.info['name']} 打卡数据提交失败'
+        return 1, f'{dk.info['name']} 打卡数据提交失败', '数据提交失败'
 
 
     
@@ -229,19 +229,19 @@ if __name__ == "__main__":
     username = os.environ['USERNAME']
     password = os.environ['PASSWORD']
 
-    ret, msg = main(username, password)
-    print(ret, msg)
+    ret, msg, cont = main(username, password)
+    print(ret, msg, cont)
     if ret == 1:
         time.sleep(5)
-        ret, msg = main(username, password)
-        print(ret, msg)
+        ret, msg, cont = main(username, password)
+        print(ret, msg, cont)
 
     pushplus_token = os.environ.get('PUSHPLUS_TOKEN')
     if pushplus_token:
-        ret = message.pushplus(msg, '', pushplus_token)
-        print('send_pushplus_message', ret)
+        ret = message.pushplus(msg, cont, pushplus_token)
+#         print('send_pushplus_message', ret)
     
     pushplus2_token = os.environ.get('PUSHPLUS2_TOKEN')
     if pushplus2_token:
-        ret = message.pushplus2(msg, '', pushplus2_token)
-        print('send_pushplus2_message', ret)
+        ret = message.pushplus2(msg, cont, pushplus2_token)
+#         print('send_pushplus2_message', ret)
