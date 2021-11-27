@@ -215,7 +215,7 @@ def main(username, password):
         res = hit_carder.post()
         print(res)
         if str(res['e']) == '0':
-            return 0, '%s 打卡成功' %(hit_carder.info['name']), datetime.date.today()+1
+            return 0, '%s 打卡成功' %(hit_carder.info['name']), datetime.date.today() + datetime.timedelta(days=1)
         elif str(res['m']) == '今天已经填报了':
             return 0, '%s 今天已经打卡' %(hit_carder.info['name']), str(res['m'])
         else:
