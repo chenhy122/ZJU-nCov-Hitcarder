@@ -32,7 +32,7 @@ def dingtalk(msg, dingtalk_token, tries=5):
 
 
 def pushplus(title, content, pushplus_token, tries=5):
-    title, content = title[:100], content[:100]
+#     title, content = title[:100], content[:100]
     url = 'http://pushplus.hxtrip.com/send?token={}'.format(pushplus_token)
     m = {"title": title, "content": content, "topic": 1}
     requests.get(url, m)
@@ -59,7 +59,7 @@ def pushplus(title, content, pushplus_token, tries=5):
 
 
 def pushplus2(title, content, pushplus2_token, tries=5):
-    title, content = title[:100], content[:100]
+#     title, content = title[:100], content[:100]
     url = 'http://www.pushplus.plus/send?token={}'.format(pushplus2_token)
     m = {"title": title, "content": content, "topic": 1}
     requests.get(url, m)
