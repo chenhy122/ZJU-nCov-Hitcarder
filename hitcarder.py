@@ -90,6 +90,8 @@ class HitCarder(object):
         with open("form.txt", "r", encoding="utf-8") as f:
             if new_form == f.read():
                 return True
+            print(f.read())
+            print(new_form)
         return False
 
     def get_info(self, html=None):
